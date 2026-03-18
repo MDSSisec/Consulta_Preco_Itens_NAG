@@ -33,7 +33,7 @@ Esta ferramenta acelera a pesquisa de preços trazendo:
 
 ## Pré-requisitos
 
-- Python 3.12+ (recomendado)
+- Python 3.10+
 
 ---
 
@@ -102,6 +102,36 @@ Após executar, acesse:
 3. Visualize a tabela (título, preço e loja) e o resumo estatístico quando possível
 
 > A SerpAPI é uma API externa e pode ter **limite de uso (ex.: 250 consultas)**, dependendo do plano/chave.
+
+---
+
+## Regras de limpeza (CATMAT)
+
+O **CATMAT é genérico**. Para reduzir ruído e deixar os números mais consistentes, aplicamos uma limpeza automática em `src/core/cleaning.py`, incluindo:
+
+- **Filtro por descrição**: remove termos típicos de “não é unitário” (ex.: kit, lote, combo, caixa, pacote, etc.)
+- **Filtro por unidade**: prioriza unidade quando disponível (ex.: UN/UNIDADE)
+- **Filtro por data**: prioriza registros mais recentes (ex.: últimos 24 meses)
+- **Outliers**: corte relativo por mediana e IQR
+
+> Mesmo com filtros, revise descrição/marca/unidade antes de usar os números em documentos formais.
+
+---
+
+## Arquitetura do projeto
+
+- `app.py`: cria o Flask e registra os blueprints
+- `src/routes/`
+  - `compras.py`: rota `/` (CATMAT)
+  - `serpapi.py`: rota `/serpapi` (SerpAPI)
+- `src/services/`
+  - `compras_gov.py`: consulta a API do Compras.gov.br e normaliza colunas
+  - `serpapi_client.py`: cliente SerpAPI (lê chave do `.env`)
+- `src/core/`
+  - `cleaning.py`: regras de limpeza e cálculo de estatísticas
+  - `formatting.py`: formatação de moeda
+- `templates/`: UI (abas, tabela e cards)
+- `static/`: CSS
 
 ---
 
