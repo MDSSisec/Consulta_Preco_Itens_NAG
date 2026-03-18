@@ -1,46 +1,57 @@
-<div class="mb-3">
-  <h2 class="h5">
-    Resumo estatístico
-    ({{ stats.n_registros_validos }} registros válidos de {{ stats.n_registros_totais }} obtidos)
-  </h2>
-</div>
-
-<div class="row mb-3">
-  <div class="col-md-3">
-    <div class="card mb-3 bg-white border">
-      <div class="card-body">
-        <h5 class="card-title">Mínimo válido</h5>
-        <p class="card-text fs-4">{{ stats.min_fmt }}</p>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card mb-3 bg-white border">
-      <div class="card-body">
-        <h5 class="card-title">Mediana</h5>
-        <p class="card-text fs-4">{{ stats.mediana_fmt }}</p>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card mb-3 bg-white border">
-      <div class="card-body">
-        <h5 class="card-title">Média</h5>
-        <p class="card-text fs-4">{{ stats.media_fmt }}</p>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card mb-3 bg-white border">
-      <div class="card-body">
-        <h5 class="card-title">Máximo válido</h5>
-        <p class="card-text fs-4">{{ stats.max_fmt }}</p>
-      </div>
-    </div>
+<div class="mb-4">
+  <div class="d-flex justify-content-between align-items-center">
+    <h2 class="h5 mb-0">
+      Resumo estatístico dos preços
+    </h2>
+    <span class="text-muted small">
+      Base: <strong>{{ stats.n_registros_validos }}</strong> registros válidos
+      (de {{ stats.n_registros_totais }} coletados)
+    </span>
   </div>
 </div>
 
-<p class="text-muted small mb-4">
-  Intervalo interquartil (IQR): de {{ stats.iqr_min_fmt }} a {{ stats.iqr_max_fmt }}.
-</p>
+<div class="row g-3 mb-3">
+  <div class="col-12 col-sm-6 col-lg-3">
+    <div class="card h-100 border bg-white">
+      <div class="card-body">
+        <div class="text-muted small">Valor mínimo</div>
+        <div class="fs-4 fw-semibold">{{ stats.min_fmt }}</div>
+      </div>
+    </div>
+  </div>
 
+  <div class="col-12 col-sm-6 col-lg-3">
+    <div class="card h-100 border bg-white">
+      <div class="card-body">
+        <div class="text-muted small">Mediana (P50)</div>
+        <div class="fs-4 fw-semibold">{{ stats.mediana_fmt }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-sm-6 col-lg-3">
+    <div class="card h-100 border bg-white">
+      <div class="card-body">
+        <div class="text-muted small">Média</div>
+        <div class="fs-4 fw-semibold">{{ stats.media_fmt }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-sm-6 col-lg-3">
+    <div class="card h-100 border bg-white">
+      <div class="card-body">
+        <div class="text-muted small">Valor máximo</div>
+        <div class="fs-4 fw-semibold">{{ stats.max_fmt }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="text-muted small mb-4">
+  Faixa interquartil (IQR): 
+  <strong>{{ stats.iqr_min_fmt }}</strong> a <strong>{{ stats.iqr_max_fmt }}</strong>.
+  <span class="d-block mt-1">
+    Indicador utilizado para reduzir o impacto de outliers na análise de preços.
+  </span>
+</div>

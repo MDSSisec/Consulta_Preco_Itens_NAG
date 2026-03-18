@@ -4,12 +4,16 @@
   <div class="card mb-4">
     <div class="card-body">
       <p class="text-muted mb-2 mb-lg-0">
-        Antes de consultar, localize o código do material no
-        <a href="https://catalogo.compras.gov.br/cnbs-web/busca" target="_blank" rel="noopener">Catálogo de Compras</a>.
+        Antes de realizar a consulta, identifique o código do material no 
+        <a href="https://catalogo.compras.gov.br/cnbs-web/busca" target="_blank" rel="noopener">
+          Catálogo de Compras do Governo Federal
+        </a>.
       </p>
       <p class="text-muted small mb-0">
-        O código CATMAT é genérico. Os valores abaixo são uma <strong>estimativa estatística</strong> após limpeza automática.
-        Sempre confira <strong>descrição detalhada</strong>, <strong>marca</strong> e <strong>unidade de fornecimento</strong>.
+        O código CATMAT possui natureza <strong>genérica</strong>. Os valores apresentados correspondem a uma 
+        <strong>estimativa estatística</strong>, obtida a partir de tratamento e normalização automatizada dos dados.
+        Recomenda-se a validação considerando <strong>descrição detalhada</strong>, <strong>marca/modelo</strong> e 
+        <strong>unidade de fornecimento</strong>.
       </p>
     </div>
   </div>
@@ -17,12 +21,13 @@
   <form method="post" class="mb-4 js-loading-form">
     <div class="card">
       <div class="card-body">
-        <div class="row g-2 align-items-center">
-          <div class="col-auto">
-            <span class="form-label mb-0 fw-semibold">Código do item (CATMAT)</span>
-          </div>
+        <div class="row g-3 align-items-end">
           <div class="col-12 col-md-6 col-lg-4">
+            <label class="form-label fw-semibold" for="codigo_item">
+              Código do Item (CATMAT)
+            </label>
             <input
+              id="codigo_item"
               type="text"
               name="codigo_item"
               class="form-control"
@@ -32,7 +37,9 @@
             >
           </div>
           <div class="col-auto">
-            <button class="btn btn-primary" type="submit">Buscar</button>
+            <button class="btn btn-primary" type="submit">
+              Consultar
+            </button>
           </div>
         </div>
       </div>
@@ -40,23 +47,30 @@
   </form>
 
   {% if erro %}
-    <div class="alert alert-danger">{{ erro }}</div>
+    <div class="alert alert-danger" role="alert">
+      {{ erro }}
+    </div>
   {% endif %}
 
   {% if stats %}
     {% include "partials/_stats_cards.html" %}
 
     {% if tabela_rows %}
-      <h2 class="h5 mb-3">
-        Registros considerados (após limpeza)
-        <span class="text-muted small fw-normal">Exibindo <strong>{{ tabela_rows|length }}</strong> registros</span>
-      </h2>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 mb-0">
+          Registros considerados após tratamento
+        </h2>
+        <span class="text-muted small">
+          Total exibido: <strong>{{ tabela_rows|length }}</strong>
+        </span>
+      </div>
+
       <div class="table-responsive">
         <table class="table table-striped table-hover table-sm align-middle table-bordered">
-          <thead>
+          <thead class="table-light">
             <tr>
               {% for col in colunas_tabela %}
-                <th>{{ col }}</th>
+                <th scope="col">{{ col }}</th>
               {% endfor %}
             </tr>
           </thead>
@@ -74,4 +88,3 @@
     {% endif %}
   {% endif %}
 {% endblock %}
-

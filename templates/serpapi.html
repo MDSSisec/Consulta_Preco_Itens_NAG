@@ -3,12 +3,13 @@
 {% block content %}
   <div class="card mb-4">
     <div class="card-body">
-      <form method="post" class="row g-2 align-items-center js-loading-form">
-        <div class="col-auto">
-          <span class="form-label mb-0 fw-semibold">Termo de busca</span>
-        </div>
+      <form method="post" class="row g-3 align-items-end js-loading-form">
         <div class="col-12 col-md-6 col-lg-4">
+          <label for="q" class="form-label fw-semibold">
+            Termo de Busca
+          </label>
           <input
+            id="q"
             type="text"
             name="q"
             class="form-control"
@@ -17,19 +18,44 @@
             required
           >
         </div>
+        <div class="col-12 col-md-3 col-lg-2">
+          <label for="num" class="form-label fw-semibold">
+            Quantidade
+          </label>
+          <select id="num" name="num" class="form-select">
+            {% set selected_num = (num or 60) %}
+            <option value="20" {% if selected_num == 20 %}selected{% endif %}>20</option>
+            <option value="40" {% if selected_num == 40 %}selected{% endif %}>40</option>
+            <option value="60" {% if selected_num == 60 %}selected{% endif %}>60</option>
+            <option value="80" {% if selected_num == 80 %}selected{% endif %}>80</option>
+            <option value="100" {% if selected_num == 100 %}selected{% endif %}>100</option>
+          </select>
+        </div>
         <div class="col-auto">
-          <button class="btn btn-primary" type="submit">Buscar</button>
+          <button class="btn btn-primary" type="submit">
+            Consultar
+          </button>
         </div>
       </form>
 
-      <div class="alert alert-info py-2 px-3 small mt-3 mb-0" role="note">
-        <div class="fw-semibold mb-1">O que esta busca retorna</div>
+      <div class="alert alert-info py-3 px-3 small mt-4 mb-0" role="note">
+        <div class="fw-semibold mb-2">Escopo da consulta</div>
+
         <ul class="mb-2">
-          <li>Uma lista de resultados do Google Shopping (título, preço e loja).</li>
-          <li>Um resumo estatístico (mínimo, mediana, média, máximo e IQR) quando o preço é identificável como número.</li>
+          <li>
+            Retorno de resultados provenientes do Google Shopping, incluindo
+            <strong>título</strong>, <strong>preço</strong> e <strong>loja</strong>.
+          </li>
+          <li>
+            Geração de resumo estatístico dos preços identificados, contemplando
+            <strong>mínimo</strong>, <strong>mediana</strong>, <strong>média</strong>,
+            <strong>máximo</strong> e <strong>intervalo interquartil (IQR)</strong>.
+          </li>
         </ul>
+
         <div class="text-muted">
-          Esta aba usa a <strong>SerpAPI</strong> (API externa) e está sujeita a limites de uso:
+          Esta funcionalidade utiliza a API externa <strong>SerpAPI</strong> e está sujeita a
+          limitações operacionais, com cota aproximada de
           <strong>até 250 consultas</strong>.
         </div>
       </div>
@@ -37,7 +63,9 @@
   </div>
 
   {% if erro %}
-    <div class="alert alert-danger">{{ erro }}</div>
+    <div class="alert alert-danger" role="alert">
+      {{ erro }}
+    </div>
   {% endif %}
 
   {% if stats %}
@@ -45,15 +73,23 @@
   {% endif %}
 
   {% if resultados %}
-    <h2 class="h5 mb-3">Resultados (Google Shopping)</h2>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="h5 mb-0">
+        Resultados da consulta (Google Shopping)
+      </h2>
+      <span class="text-muted small">
+        Total retornado: <strong>{{ resultados|length }}</strong>
+      </span>
+    </div>
+
     <div class="table-responsive">
       <table class="table table-striped table-hover table-sm align-middle table-bordered">
-        <thead>
+        <thead class="table-light">
           <tr>
-            <th>#</th>
-            <th>Título</th>
-            <th>Preço</th>
-            <th>Loja</th>
+            <th scope="col">#</th>
+            <th scope="col">Título</th>
+            <th scope="col">Preço</th>
+            <th scope="col">Fornecedor</th>
           </tr>
         </thead>
         <tbody>
@@ -70,4 +106,3 @@
     </div>
   {% endif %}
 {% endblock %}
-
