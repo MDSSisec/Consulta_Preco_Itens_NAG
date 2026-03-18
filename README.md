@@ -159,4 +159,20 @@ O **CATMAT é genérico**. Para reduzir ruído e deixar os números mais consist
 
 - Endpoint: `https://serpapi.com/search`
 
+---
+
+## Desenvolvedores
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/DevLucasFontoura" target="_blank">
+        <img src="https://github.com/DevLucasFontoura.png" width="120" alt="Lucas Fontoura" style="border-radius: 50%"/><br/>
+        <b>Lucas Fontoura</b>
+      </a><br/>
+      <sub>Desenvolvedor · <a href="https://github.com/DevLucasFontoura">@DevLucasFontoura</a></sub>
+    </td>
+  </tr>
+</table>
+
 
