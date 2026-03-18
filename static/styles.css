@@ -1,0 +1,32 @@
+/* Ajustes leves para leitura */
+code { font-size: 0.95em; }
+.table td { vertical-align: middle; }
+
+.global-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 1055;
+}
+
+.global-loading__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(2px);
+}
+
+.global-loading__panel {
+  position: absolute;
+  top: 18vh;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 14px 16px;
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  min-width: 280px;
+}
+

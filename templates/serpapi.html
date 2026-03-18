@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="card mb-4">
+    <div class="card-body">
+      <form method="post" class="row g-2 align-items-center js-loading-form">
+        <div class="col-auto">
+          <span class="form-label mb-0 fw-semibold">Termo de busca</span>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+          <input
+            type="text"
+            name="q"
+            class="form-control"
+            value="{{ termo or '' }}"
+            placeholder="Ex: mouse sem fio logitech"
+            required
+          >
+        </div>
+        <div class="col-auto">
+          <button class="btn btn-primary" type="submit">Buscar</button>
+        </div>
+      </form>
+
+      <div class="alert alert-info py-2 px-3 small mt-3 mb-0" role="note">
+        <div class="fw-semibold mb-1">O que esta busca retorna</div>
+        <ul class="mb-2">
+          <li>Uma lista de resultados do Google Shopping (título, preço e loja).</li>
+          <li>Um resumo estatístico (mínimo, mediana, média, máximo e IQR) quando o preço é identificável como número.</li>
+        </ul>
+        <div class="text-muted">
+          Esta aba usa a <strong>SerpAPI</strong> (API externa) e está sujeita a limites de uso:
+          <strong>até 250 consultas</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if erro %}
+    <div class="alert alert-danger">{{ erro }}</div>
+  {% endif %}
+
+  {% if stats %}
+    {% include "partials/_stats_cards.html" %}
+  {% endif %}
+
+  {% if resultados %}
+    <h2 class="h5 mb-3">Resultados (Google Shopping)</h2>
+    <div class="table-responsive">
+      <table class="table table-striped table-hover table-sm align-middle table-bordered">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Título</th>
+            <th>Preço</th>
+            <th>Loja</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in resultados %}
+            <tr>
+              <td>{{ item.position }}</td>
+              <td>{{ item.title }}</td>
+              <td>{{ item.price }}</td>
+              <td>{{ item.source }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+{% endblock %}
+

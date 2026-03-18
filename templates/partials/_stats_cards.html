@@ -1,0 +1,46 @@
+<div class="mb-3">
+  <h2 class="h5">
+    Resumo estatístico
+    ({{ stats.n_registros_validos }} registros válidos de {{ stats.n_registros_totais }} obtidos)
+  </h2>
+</div>
+
+<div class="row mb-3">
+  <div class="col-md-3">
+    <div class="card mb-3 bg-white border">
+      <div class="card-body">
+        <h5 class="card-title">Mínimo válido</h5>
+        <p class="card-text fs-4">{{ stats.min_fmt }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card mb-3 bg-white border">
+      <div class="card-body">
+        <h5 class="card-title">Mediana</h5>
+        <p class="card-text fs-4">{{ stats.mediana_fmt }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card mb-3 bg-white border">
+      <div class="card-body">
+        <h5 class="card-title">Média</h5>
+        <p class="card-text fs-4">{{ stats.media_fmt }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card mb-3 bg-white border">
+      <div class="card-body">
+        <h5 class="card-title">Máximo válido</h5>
+        <p class="card-text fs-4">{{ stats.max_fmt }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="text-muted small mb-4">
+  Intervalo interquartil (IQR): de {{ stats.iqr_min_fmt }} a {{ stats.iqr_max_fmt }}.
+</p>
+
