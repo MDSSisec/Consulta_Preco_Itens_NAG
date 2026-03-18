@@ -1,147 +1,132 @@
-# Consulta de Preços (NAG)
+# Pesquisa de Preços — Compras.gov.br + SerpAPI
 
-Aplicação web interna (Flask) para **pesquisa e análise de preços** usando duas fontes:
+Aplicação web interna desenvolvida em **Flask** para **pesquisa e análise de preços**, combinando:
 
-- **Compras.gov.br (CATMAT)**: o usuário digita um **código CATMAT**, o sistema consulta a API pública do Compras.gov.br, faz limpeza automática e retorna **mínimo / mediana / média / máximo válido** + **IQR** e uma tabela de registros.
-- **SerpAPI (Google Shopping)**: o usuário digita um **termo de busca**, o sistema consulta o Google Shopping via SerpAPI e retorna a lista de itens com link + estatísticas de preço quando possível.
-
-O objetivo é acelerar a pesquisa, reduzindo ruído (kits, lotes, cadastros errados) e deixando o resultado **mais técnico e rastreável**.
+- **Compras.gov.br (CATMAT)**: consulta à API pública de Dados Abertos para registros de compras governamentais.
+- **SerpAPI (Google Shopping)**: consulta à API externa para pesquisa rápida de preços na internet.
 
 ---
 
-## Como usar (visão do usuário)
+## Sobre
 
-### Aba 1 — Compras.gov.br (CATMAT)
+Esta ferramenta acelera a pesquisa de preços trazendo:
 
-1. Localize o código no Catálogo de Compras: `https://catalogo.compras.gov.br/cnbs-web/busca`
-2. Digite o **código CATMAT**
-3. Clique em **Buscar**
-4. O sistema mostra:
-   - **Resumo estatístico**: mínimo válido, mediana, média, máximo válido e IQR
-   - **Registros considerados**: tabela ordenada por preço (menor → maior)
+- **Resumo estatístico** (mínimo, mediana, média, máximo e IQR)
+- **Tabela de resultados** para auditoria rápida
+- **Melhorias de UX** (loading ao pesquisar e limpeza automática ao recarregar)
 
-### Aba 2 — SerpAPI (Google Shopping)
-
-1. Digite um termo (ex.: “mouse sem fio logitech”)
-2. Clique em **Buscar**
-3. O sistema mostra:
-   - Tabela com **título, preço, loja e link**
-   - Estatísticas quando o preço é extraível como número
+> Observação: as fontes são diferentes. No **Compras.gov.br** há limpeza/normalização de dados; na **SerpAPI** os resultados refletem a internet e podem misturar kits/caixas/unidades.
 
 ---
 
-## Regras de limpeza (CATMAT)
+## Funcionalidades
 
-Importante: **CATMAT é genérico**. Para deixar o resultado mais consistente, aplicamos uma limpeza automática em `src/core/cleaning.py`.
-
-### 1) Filtro por descrição
-
-Remove registros cuja descrição contenha termos típicos de “não é um item unitário”, por exemplo:
-
-- KIT, LOTE, COMBO, CONJUNTO, PACK, CAIXA, ESTOJO, CX, PACOTE
-
-### 2) Filtro por unidade de fornecimento
-
-Quando a API retorna unidade, mantemos apenas:
-
-- **UN** / **UNIDADE**
-
-Isso reduz casos de “caixa com N unidades” ou “kit” marcado como unitário.
-
-### 3) Filtro por data
-
-Se existir data, o sistema mantém apenas:
-
-- **últimos 24 meses**
-
-Isso evita distorção por preços antigos (2021/2022/2023 etc.).
-
-### 4) Outliers por mediana (corte relativo)
-
-Depois de calcular a mediana, removemos valores acima de:
-
-- **4 × mediana**
-
-### 5) Outliers por IQR (intervalo interquartil)
-
-Aplicamos IQR sobre o conjunto já filtrado e calculamos também:
-
-- **Q1 e Q3** (mostrados como “IQR: de Q1 a Q3”)
-
-> Mesmo com filtros, é recomendado revisar **descrição detalhada**, **marca** e **unidade** antes de usar os números em processos formais.
+- Consulta por **código CATMAT** (Compras.gov.br)
+- Consulta por **termo de busca** (SerpAPI / Google Shopping)
+- Feedback visual com **indicador de carregamento** durante a requisição
+- Exibição de **tabela** + **cards** de estatística (min/mediana/média/max/IQR)
+- Preços formatados em **pt-BR** (`R$ 1.234,56`)
+- Parser de preço mais tolerante (remove sufixos como “agora”, “à vista”, “a partir de”, etc.)
+- Limpeza automática do estado ao **recarregar a página** (evita reenvio de formulário/POST)
 
 ---
 
-## Arquitetura do projeto
+## Pré-requisitos
 
-- **`app.py`**: cria o Flask e registra os blueprints
-- **`src/routes/`**:
-  - `compras.py`: rota `/` (CATMAT)
-  - `serpapi.py`: rota `/serpapi` (SerpAPI)
-- **`src/services/`**:
-  - `compras_gov.py`: consulta a API do Compras.gov.br e normaliza colunas
-  - `serpapi_client.py`: cliente SerpAPI (lê chave do `.env`)
-- **`src/core/`**:
-  - `cleaning.py`: regras de limpeza e cálculo de estatísticas
-  - `formatting.py`: formatação de moeda
-- **`templates/`**:
-  - `base.html`: layout + navegação por abas
-  - `compras.html`, `serpapi.html`
-  - `partials/_stats_cards.html`: cards reutilizáveis
-- **`static/`**:
-  - `styles.css`: ajustes visuais
+- Python 3.12+ (recomendado)
 
 ---
 
-## Variáveis de ambiente (.env)
+## Como executar localmente
 
-Crie um `.env` baseado no `.env.example`.
-
-- **`SERPAPI_API_KEY`**: obrigatório para a aba SerpAPI
-- **`PORT`**: opcional (default 5000)
-
-Exemplo:
-
-```bash
-SERPAPI_API_KEY="SUA_CHAVE_AQUI"
-PORT=5000
-```
-
----
-
-## Como rodar o projeto (passo a passo)
-
-### 1) Criar e ativar o ambiente virtual
+### 1) Entrar na pasta do projeto
 
 ```bash
 cd /Users/lucasfontoura/Documents/lucas/python/consulta-preco-nag
+```
+
+### 2) Criar e ativar o ambiente virtual
+
+```bash
 python3 -m venv venv
 source venv/bin/activate
 ```
 
-### 2) Instalar dependências
+### 3) Instalar dependências
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3) Configurar `.env`
+### 4) Configurar `.env`
 
 ```bash
 cp .env.example .env
 ```
 
-Edite o arquivo `.env` e preencha `SERPAPI_API_KEY`.
+Edite o arquivo `.env` e preencha:
 
-### 4) Executar
+- `SERPAPI_API_KEY` (obrigatório para a aba SerpAPI)
+- `PORT` (opcional; default 5000)
+
+### 5) Executar a aplicação
 
 ```bash
-python app.py
+python3 app.py
 ```
 
-### 5) Acessar no navegador
+---
+
+## Acesso
+
+Após executar, acesse:
 
 - Compras.gov.br (CATMAT): `http://127.0.0.1:5000/`
 - SerpAPI (Google Shopping): `http://127.0.0.1:5000/serpapi`
+
+---
+
+## Como usar
+
+### Aba 1 — Compras.gov.br (CATMAT)
+
+1. Acesse o [Catálogo de Compras](https://catalogo.compras.gov.br/cnbs-web/busca) e localize o código CATMAT
+2. Digite o **código CATMAT**
+3. Clique em **Buscar**
+4. Visualize o **resumo estatístico** e a **tabela de registros**
+
+### Aba 2 — SerpAPI (Google Shopping)
+
+1. Digite um termo (ex.: “caneta”, “mouse sem fio logitech”)
+2. Clique em **Buscar**
+3. Visualize a tabela (título, preço e loja) e o resumo estatístico quando possível
+
+> A SerpAPI é uma API externa e pode ter **limite de uso (ex.: 250 consultas)**, dependendo do plano/chave.
+
+---
+
+## Tecnologias
+
+| Tecnologia | Função |
+|------------|--------|
+| Python | Linguagem base |
+| Flask | Aplicação web e rotas |
+| Requests | Consumo de APIs |
+| Pandas | Tratamento/tabulação (CATMAT) |
+| python-dotenv | Leitura do `.env` |
+| Bootstrap | Estilos e componentes de UI |
+
+---
+
+## Fonte de dados
+
+**Compras.gov.br — Dados Abertos**
+
+- Catálogo: `https://catalogo.compras.gov.br/cnbs-web/busca`
+- APIs: `https://dadosabertos.compras.gov.br/`
+
+**SerpAPI (Google Shopping)**
+
+- Endpoint: `https://serpapi.com/search`
 
 
