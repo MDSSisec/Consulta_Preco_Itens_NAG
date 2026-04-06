@@ -67,7 +67,7 @@ cp .env.example .env
 Edite o arquivo `.env` e preencha:
 
 - `SERPAPI_API_KEY` (obrigatório para a aba SerpAPI)
-- `PORT` (opcional; default 5000)
+- `PORT` (opcional; default **5001** — no macOS a porta **5000** costuma ser usada pelo AirPlay e o browser pode receber **403**)
 
 ### 5) Executar a aplicação
 
@@ -81,8 +81,10 @@ python3 app.py
 
 Após executar, acesse:
 
-- Compras.gov.br (CATMAT): `http://127.0.0.1:5000/`
-- SerpAPI (Google Shopping): `http://127.0.0.1:5000/serpapi`
+- Compras.gov.br (CATMAT): `http://127.0.0.1:5001/`
+- SerpAPI (Google Shopping): `http://127.0.0.1:5001/serpapi`
+
+> **macOS:** se ao abrir `http://127.0.0.1:5000/` aparecer **403 Forbidden**, não é o Flask: o **AirPlay Receiver** usa a porta 5000. Use `PORT=5001` no `.env` (já é o default do projeto) ou desative *AirPlay Receiver* em Ajustes do Sistema → Geral → AirDrop e Handoff.
 
 ---
 
@@ -107,7 +109,7 @@ Após executar, acesse:
 
 ## Regras de limpeza (CATMAT)
 
-O **CATMAT é genérico**. Para reduzir ruído e deixar os números mais consistentes, aplicamos uma limpeza automática em `src/core/cleaning.py`, incluindo:
+O **CATMAT é genérico**. Para reduzir ruído e deixar os números mais consistentes, aplicamos uma limpeza automática em `src/services/price_service.py` (função `processar_df`), incluindo:
 
 - **Filtro por descrição**: remove termos típicos de “não é unitário” (ex.: kit, lote, combo, caixa, pacote, etc.)
 - **Filtro por unidade**: prioriza unidade quando disponível (ex.: UN/UNIDADE)
@@ -120,18 +122,23 @@ O **CATMAT é genérico**. Para reduzir ruído e deixar os números mais consist
 
 ## Arquitetura do projeto
 
-- `app.py`: cria o Flask e registra os blueprints
-- `src/routes/`
-  - `compras.py`: rota `/` (CATMAT)
-  - `serpapi.py`: rota `/serpapi` (SerpAPI)
-- `src/services/`
-  - `compras_gov.py`: consulta a API do Compras.gov.br e normaliza colunas
-  - `serpapi_client.py`: cliente SerpAPI (lê chave do `.env`)
-- `src/core/`
-  - `cleaning.py`: regras de limpeza e cálculo de estatísticas
-  - `formatting.py`: formatação de moeda
-- `templates/`: UI (abas, tabela e cards)
-- `static/`: CSS
+| Camada / caminho | Função |
+|------------------|--------|
+| `app.py` | Cria o Flask e regista os blueprints |
+| `src/config/env.py` | Carrega `.env` / `.env.example` e helpers (`PORT`, `SERPAPI_API_KEY`) |
+| `src/api/` | Comunicação externa (HTTP) e parsing inicial: `client`, `mapper`, `errors` |
+| `src/api/compras_gov/` | `client.py`, `mapper.py`, `errors.py` (`ComprasGovError`) |
+| `src/api/serp_api/` | `client.py`, `mapper.py`, `errors.py` (`SerpAPIError`) |
+| `src/api/__init__.py` | Fachada: reexporta exceções e `fetch_compras_gov` / `fetch_google_shopping` (implementados em `services/`) |
+| `src/services/compras_gov_service.py` | Orquestração Compras.gov: `fetch_compras_gov` (cliente + mapper) |
+| `src/services/serp_api_service.py` | Orquestração SerpAPI: `fetch_google_shopping` |
+| `src/services/price_service.py` | Limpeza CATMAT, estatísticas, tabela, formatação do fluxo SerpAPI |
+| `src/domain/cleaning.py` | Configuração e estatísticas de limpeza (`CleaningConfig`, `CleaningStats`) |
+| `src/domain/product.py` | Espaço para entidades de produto no domínio |
+| `src/utils/format_price.py` | Formatação monetária pt-BR |
+| `src/routes/price.py` | Blueprints Flask (`/` e `/serpapi`, padrão PRG) |
+| `templates/` | UI (abas, tabela e cards) |
+| `static/` | CSS e assets estáticos |
 
 ---
 

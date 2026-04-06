@@ -1,20 +1,14 @@
-import os
-
 from pathlib import Path
 
-from dotenv import load_dotenv
 from flask import Flask
 
-from src.routes.compras import compras_bp
-from src.routes.serpapi import serpapi_bp
+from src.config.env import get_port, load_env
+from src.routes.price import compras_bp, serpapi_bp
 
 
 def create_app() -> Flask:
     project_dir = Path(__file__).resolve().parent
-    dotenv_path = project_dir / ".env"
-    if not dotenv_path.exists():
-        dotenv_path = project_dir / ".env.example"
-    load_dotenv(dotenv_path=dotenv_path)
+    load_env(project_dir)
 
     app = Flask(__name__)
     app.register_blueprint(compras_bp)
@@ -22,11 +16,8 @@ def create_app() -> Flask:
     return app
 
 
-# Instancia global para o Gunicorn
 app = create_app()
 
 
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", "5000"))
-    app.run(debug=True, port=port)
-
+    app.run(debug=True, port=get_port())
