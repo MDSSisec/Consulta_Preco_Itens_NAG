@@ -3,6 +3,7 @@ from pathlib import Path
 from flask import Flask
 
 from src.config.env import get_port, load_env
+from src.routes.metodologia import metodologia_bp
 from src.routes.price import compras_bp, serpapi_bp
 
 
@@ -13,6 +14,7 @@ def create_app() -> Flask:
     app = Flask(__name__)
     app.register_blueprint(compras_bp)
     app.register_blueprint(serpapi_bp)
+    app.register_blueprint(metodologia_bp)
     return app
 
 

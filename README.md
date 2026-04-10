@@ -83,6 +83,7 @@ Após executar, acesse:
 
 - Compras.gov.br (CATMAT): `http://127.0.0.1:5001/`
 - SerpAPI (Google Shopping): `http://127.0.0.1:5001/serpapi`
+- Metodologia de Pesquisa de Preços: `http://127.0.0.1:5001/metodologia`
 
 > **macOS:** se ao abrir `http://127.0.0.1:5000/` aparecer **403 Forbidden**, não é o Flask: o **AirPlay Receiver** usa a porta 5000. Use `PORT=5001` no `.env` (já é o default do projeto) ou desative *AirPlay Receiver* em Ajustes do Sistema → Geral → AirDrop e Handoff.
 
@@ -136,7 +137,8 @@ O **CATMAT é genérico**. Para reduzir ruído e deixar os números mais consist
 | `src/domain/cleaning.py` | Configuração e estatísticas de limpeza (`CleaningConfig`, `CleaningStats`) |
 | `src/domain/product.py` | Espaço para entidades de produto no domínio |
 | `src/utils/format_price.py` | Formatação monetária pt-BR |
-| `src/routes/price.py` | Blueprints Flask (`/` e `/serpapi`, padrão PRG) |
+| `src/routes/price.py` | Blueprints Flask — consultas (`/` e `/serpapi`, padrão PRG) |
+| `src/routes/metodologia.py` | Rota `/metodologia` — texto formal sobre metodologia e fontes |
 | `templates/` | UI (abas, tabela e cards) |
 | `static/` | CSS e assets estáticos |
 

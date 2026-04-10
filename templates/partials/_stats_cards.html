@@ -54,4 +54,14 @@
   <span class="d-block mt-1">
     Indicador utilizado para reduzir o impacto de outliers na análise de preços.
   </span>
+  {% if stats.n_filtrados_incomparaveis is defined or stats.n_outliers_removidos is defined %}
+    <span class="d-block mt-1">
+      {% if stats.n_filtrados_incomparaveis is defined %}
+        Filtrados (não comparáveis): <strong>{{ stats.n_filtrados_incomparaveis }}</strong>.
+      {% endif %}
+      {% if stats.n_outliers_removidos is defined %}
+        Outliers removidos (IQR): <strong>{{ stats.n_outliers_removidos }}</strong>.
+      {% endif %}
+    </span>
+  {% endif %}
 </div>

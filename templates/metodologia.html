@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+{% block title %}Metodologia de Pesquisa de Preços — Pesquisa de Preços{% endblock %}
+
+{% block content %}
+  <article class="metodologia-doc card border-0 shadow-sm">
+    <div class="card-body p-4 p-lg-5">
+
+      <header class="mb-4 pb-3 border-bottom metodologia-header">
+        <div class="d-flex flex-column flex-lg-row align-items-lg-end justify-content-between gap-3">
+          <div>
+            <h2 class="h3 mb-2">Metodologia de Pesquisa de Preços</h2>
+            <p class="text-muted small mb-0">
+              Documento técnico destinado à instrução processual em contratações públicas,
+              em conformidade com a Lei nº 14.133/2021 e normativos correlatos.
+            </p>
+          </div>
+          <div class="d-flex gap-2">
+            <a class="btn btn-sm btn-outline-secondary" href="#topo">Ir ao topo</a>
+            <a class="btn btn-sm btn-outline-secondary" href="#secao-4-1">Ver cálculo (SerpAPI)</a>
+          </div>
+        </div>
+      </header>
+
+      <div id="topo"></div>
+
+      <div class="row g-4">
+        <div class="col-12 col-lg-4 order-lg-2">
+          <aside class="metodologia-toc card border bg-white">
+            <div class="card-body">
+              <div class="text-muted small mb-2">Navegação</div>
+              <nav class="small">
+                <ol class="mb-0 ps-3">
+                  <li><a class="text-decoration-none" href="#secao-sintese">Síntese</a></li>
+                  <li><a class="text-decoration-none" href="#secao-1">1. Objetivo</a></li>
+                  <li><a class="text-decoration-none" href="#secao-2">2. Fontes</a></li>
+                  <li><a class="text-decoration-none" href="#secao-3">3. Justificativa</a></li>
+                  <li><a class="text-decoration-none" href="#secao-4">4. Tratamento</a></li>
+                  <li><a class="text-decoration-none" href="#secao-4-1">4.1. Cálculo (SerpAPI)</a></li>
+                  <li><a class="text-decoration-none" href="#secao-5">5. Preço de referência</a></li>
+                  <li><a class="text-decoration-none" href="#secao-6">6. Disposições finais</a></li>
+                </ol>
+              </nav>
+            </div>
+          </aside>
+        </div>
+
+        <div class="col-12 col-lg-8 order-lg-1">
+          <!-- 🔹 SÍNTESE PARA INSTRUÇÃO PROCESSUAL -->
+          <section class="card border bg-white metodologia-section mb-4" id="secao-sintese">
+            <div class="card-body">
+              <h3 class="h5 fw-semibold">Síntese para instrução processual</h3>
+
+              <div class="metodologia-callout" id="textoCopiar">
+                <p class="mb-2">
+                  A presente pesquisa de preços foi elaborada com fundamento em dados oriundos do Painel de Preços do Governo Federal
+                  (Compras.gov.br), complementados por pesquisa de mercado em plataformas públicas, mediante coleta automatizada por API.
+                </p>
+                <p class="mb-2">
+                  Os dados obtidos foram submetidos a tratamento estatístico, com aplicação de medidas de tendência central e dispersão,
+                  incluindo análise de mediana e exclusão de valores discrepantes (outliers), conforme metodologia baseada em intervalo interquartil (IQR).
+                </p>
+                <p class="mb-0">
+                  O procedimento adotado visa assegurar a compatibilidade dos valores estimados com aqueles praticados no mercado, conferindo maior
+                  confiabilidade, rastreabilidade e aderência técnica ao processo de definição do preço de referência para fins de contratação pública.
+                </p>
+              </div>
+
+              <button class="btn btn-sm btn-primary mt-2" onclick="copiarTexto(event)">
+                Copiar texto
+              </button>
+            </div>
+          </section>
+
+      <!-- 🔹 TEXTO COMPLETO -->
+      <section class="card border bg-white metodologia-section mb-4" id="secao-1">
+        <div class="card-body">
+          <h3 class="h5 fw-semibold">1. Objetivo da pesquisa</h3>
+          <p class="mb-0">
+            A presente pesquisa de preços tem por finalidade subsidiar a formação de valores de referência
+            para contratações públicas, em conformidade com os princípios da legalidade, economicidade,
+            eficiência e vantajosidade da Administração Pública, nos termos da legislação vigente,
+            em especial a Lei nº 14.133/2021.
+          </p>
+          <p class="mt-3 mb-0">
+            Busca-se assegurar a compatibilidade dos valores estimados com aqueles praticados no mercado,
+            mitigando riscos de sobrepreço ou inexequibilidade, bem como promovendo a adequada aplicação dos recursos públicos.
+          </p>
+        </div>
+      </section>
+
+      <section class="card border bg-white metodologia-section mb-4" id="secao-2">
+        <div class="card-body">
+          <h3 class="h5 fw-semibold">2. Fontes utilizadas</h3>
+          <p class="mb-2">
+            Para a composição da análise, foram utilizadas, de forma complementar, as seguintes fontes:
+          </p>
+          <ul class="mb-0">
+            <li>
+              <strong>Painel de Preços do Governo Federal (Compras.gov.br / CATMAT)</strong>, com base em registros de
+              contratações públicas anteriores.
+            </li>
+            <li>
+              <strong>Pesquisa de mercado em plataformas públicas (Google Shopping)</strong>, com coleta automatizada
+              por meio de API, possibilitando a obtenção estruturada de preços praticados no mercado.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="card border bg-white metodologia-section mb-4" id="secao-3">
+        <div class="card-body">
+          <h3 class="h5 fw-semibold">3. Justificativa das fontes</h3>
+          <p class="mb-2">
+            O Painel de Preços constitui referência institucional relevante, por refletir valores efetivamente praticados
+            pela Administração Pública. Todavia, sua utilização isolada pode apresentar limitações, tais como:
+          </p>
+          <ul class="mb-3">
+            <li>quantidade reduzida de registros para determinados itens;</li>
+            <li>heterogeneidade nas especificações técnicas associadas a um mesmo código;</li>
+            <li>presença de valores discrepantes (outliers).</li>
+          </ul>
+          <p class="mb-0">
+            Dessa forma, a pesquisa em plataformas de mercado visa complementar a análise com dados atualizados
+            e amplamente disponíveis, conferindo maior robustez, confiabilidade e aderência ao mercado.
+          </p>
+        </div>
+      </section>
+
+      <section class="card border bg-white metodologia-section mb-4" id="secao-4">
+        <div class="card-body">
+          <h3 class="h5 fw-semibold">4. Tratamento dos dados</h3>
+          <p class="mb-2">
+            Os dados coletados foram submetidos a tratamento estatístico, incluindo:
+          </p>
+          <ul class="mb-3">
+            <li>cálculo de média, mediana e valores extremos;</li>
+            <li>análise de dispersão;</li>
+            <li>identificação e exclusão de valores discrepantes (outliers).</li>
+          </ul>
+          <p class="mb-0">
+            Para fins de análise, priorizou-se a mediana e a faixa interquartil,
+            por apresentarem maior resistência a distorções provocadas por valores extremos.
+          </p>
+
+          <p class="mt-3 mb-0">
+            A metodologia adotada observa boas práticas estatísticas aplicáveis à análise de preços,
+            garantindo robustez metodológica, reprodutibilidade e mitigação de vieses decorrentes de valores atípicos.
+          </p>
+        </div>
+      </section>
+
+      <section class="card border bg-white metodologia-section mb-4" id="secao-4-1">
+        <div class="card-body">
+          <h4 class="h6 fw-semibold mb-2">4.1. Procedimento de cálculo (Google Shopping / SerpAPI)</h4>
+          <p class="mb-2">
+            Para a análise dos preços retornados pelo Google Shopping (via SerpAPI), aplica-se o seguinte procedimento:
+          </p>
+          <ol class="mb-3">
+            <li>
+              <strong>Extração do preço numérico</strong>: prioriza-se o campo <code>extracted_price</code> quando disponível;
+              caso ausente, realiza-se a conversão do texto do preço para valor numérico.
+              Registros sem preço válido ou com valor não positivo são desconsiderados.
+            </li>
+            <li>
+              <strong>Filtragem de itens não comparáveis</strong>: exclusão de registros com características divergentes
+              do objeto analisado, com base em termos identificados no título ou especificação do item.
+            </li>
+            <li>
+              <strong>Cálculo de quartis e intervalo interquartil (IQR)</strong>:
+              <div class="mt-2">
+                <div class="card border bg-white metodologia-formula-card">
+                  <div class="card-body py-3">
+                    <div class="text-muted small mb-2">Fórmula</div>
+                    <pre class="mb-0"><code>Q1 = P25(preços ordenados)
+Q3 = P75(preços ordenados)
+IQR = Q3 − Q1</code></pre>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li>
+              <strong>Identificação e remoção de outliers</strong> (regra 1,5 × IQR):
+              <div class="mt-2">
+                <div class="card border bg-white metodologia-formula-card">
+                  <div class="card-body py-3">
+                    <div class="text-muted small mb-2">Fórmulas</div>
+                    <pre class="mb-0"><code>Limite inferior = Q1 − 1,5 × IQR
+Limite superior = Q3 + 1,5 × IQR
+
+Manter p se:
+Limite inferior ≤ p ≤ Limite superior</code></pre>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li>
+              <strong>Geração do resumo estatístico final</strong>:
+              <div class="mt-2">
+                <div class="card border bg-white metodologia-formula-card">
+                  <div class="card-body py-3">
+                    <div class="text-muted small mb-2">Cálculos</div>
+                    <pre class="mb-0"><code>mínimo  = min(base)
+mediana = P50(base)
+média   = mean(base)
+máximo  = max(base)
+faixa IQR = [Q1(base), Q3(base)]</code></pre>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ol>
+
+          <p class="mb-0 text-muted small">
+            Observação: os registros desconsiderados permanecem disponíveis para fins de transparência e rastreabilidade.
+          </p>
+        </div>
+      </section>
+
+      <section class="card border bg-white metodologia-section mb-4" id="secao-5">
+        <div class="card-body">
+          <h3 class="h5 fw-semibold">5. Critério de formação do preço de referência</h3>
+          <ul class="mb-0">
+            <li>coerência entre as fontes analisadas;</li>
+            <li>aderência à especificação técnica do objeto;</li>
+            <li>concentração dos preços em faixa compatível com o mercado.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="card border bg-white metodologia-section mb-0" id="secao-6">
+        <div class="card-body">
+          <h3 class="h5 fw-semibold">6. Disposições finais</h3>
+          <p class="mb-0">
+            A coleta de dados de mercado foi realizada por meio de API externa, com o objetivo de padronizar
+            o processo de obtenção de informações, assegurando transparência, rastreabilidade e reprodutibilidade
+            dos resultados, em conformidade com boas práticas de governança de dados.
+          </p>
+        </div>
+      </section>
+
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <script>
+    function copiarTexto(ev) {
+      const texto = document.getElementById('textoCopiar').innerText;
+      navigator.clipboard.writeText(texto);
+
+      const btn = ev?.target;
+      if (!btn) return;
+      btn.innerText = "Copiado!";
+      setTimeout(() => btn.innerText = "Copiar texto", 2000);
+    }
+  </script>
+
+{% endblock %}

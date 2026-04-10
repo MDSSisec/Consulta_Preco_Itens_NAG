@@ -163,11 +163,43 @@ def preparar_tabela_compras(df: pd.DataFrame) -> tuple[List[Dict[str, str]], Lis
     return linhas, colunas
 
 
+def _percentile_sorted(values_sorted: list[float], p: float) -> float:
+    """
+    Percentil com interpolação linear (p em [0, 1]).
+    Espera a lista já ordenada.
+    """
+    if not values_sorted:
+        raise ValueError("Lista vazia")
+    if p <= 0:
+        return float(values_sorted[0])
+    if p >= 1:
+        return float(values_sorted[-1])
+
+    n = len(values_sorted)
+    pos = (n - 1) * p
+    lo = int(pos)
+    hi = min(lo + 1, n - 1)
+    frac = pos - lo
+    if hi == lo:
+        return float(values_sorted[lo])
+    return float(values_sorted[lo]) * (1 - frac) + float(values_sorted[hi]) * frac
+
+
 def calcular_estatisticas_serpapi(resultados: list[Dict[str, Any]]) -> Dict[str, Any] | None:
+    n_totais = len(resultados)
+
+    comparaveis: list[Dict[str, Any]] = []
+    n_incomparaveis = 0
+    for r in resultados:
+        if r.get("is_comparable") is False:
+            n_incomparaveis += 1
+            continue
+        comparaveis.append(r)
+
     precos = [
-        r["numeric_price"]
-        for r in resultados
-        if isinstance(r.get("numeric_price"), (int, float)) and r["numeric_price"] > 0
+        float(r["numeric_price"])
+        for r in comparaveis
+        if isinstance(r.get("numeric_price"), (int, float)) and float(r["numeric_price"]) > 0
     ]
 
     if not precos:
@@ -175,23 +207,39 @@ def calcular_estatisticas_serpapi(resultados: list[Dict[str, Any]]) -> Dict[str,
 
     precos_sorted = sorted(precos)
 
-    minimo = min(precos_sorted)
-    maximo = max(precos_sorted)
-    media = statistics.mean(precos_sorted)
-    mediana = statistics.median(precos_sorted)
+    # Quartis via percentis (mais estável para n par/ímpar e para listas pequenas)
+    q1 = _percentile_sorted(precos_sorted, 0.25)
+    q3 = _percentile_sorted(precos_sorted, 0.75)
+    iqr = q3 - q1
 
-    q1 = statistics.median(precos_sorted[: len(precos_sorted) // 2])
-    q3 = statistics.median(precos_sorted[(len(precos_sorted) + 1) // 2 :])
+    # Remoção de outliers pelo IQR (1,5x)
+    limite_inferior = q1 - 1.5 * iqr
+    limite_superior = q3 + 1.5 * iqr
+
+    precos_sem_outliers = [p for p in precos_sorted if limite_inferior <= p <= limite_superior]
+    n_outliers = len(precos_sorted) - len(precos_sem_outliers)
+    base = precos_sem_outliers if precos_sem_outliers else precos_sorted
+    base_sorted = sorted(base)
+
+    minimo = min(base_sorted)
+    maximo = max(base_sorted)
+    media = statistics.mean(base_sorted)
+    mediana = statistics.median(base_sorted)
+
+    q1_base = _percentile_sorted(base_sorted, 0.25)
+    q3_base = _percentile_sorted(base_sorted, 0.75)
 
     return {
-        "n_registros_validos": len(precos_sorted),
-        "n_registros_totais": len(resultados),
+        "n_registros_validos": len(base_sorted),
+        "n_registros_totais": n_totais,
+        "n_filtrados_incomparaveis": n_incomparaveis,
+        "n_outliers_removidos": n_outliers,
         "min_fmt": formatar_preco(minimo),
         "max_fmt": formatar_preco(maximo),
         "media_fmt": formatar_preco(media),
         "mediana_fmt": formatar_preco(mediana),
-        "iqr_min_fmt": formatar_preco(q1),
-        "iqr_max_fmt": formatar_preco(q3),
+        "iqr_min_fmt": formatar_preco(q1_base),
+        "iqr_max_fmt": formatar_preco(q3_base),
     }
 
 

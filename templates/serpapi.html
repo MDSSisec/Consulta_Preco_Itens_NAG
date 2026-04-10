@@ -43,8 +43,10 @@
 
         <ul class="mb-2">
           <li>
-            Retorno de resultados provenientes do Google Shopping, incluindo
-            <strong>título</strong>, <strong>preço</strong> e <strong>loja</strong>.
+            Retorno de resultados provenientes do Google Shopping (SerpAPI), incluindo
+            <strong>título</strong>, <strong>preço</strong>, <strong>loja</strong>,
+            <strong>link do produto</strong> (<code>product_link</code>) e, quando disponíveis,
+            avaliação, entrega e demais campos da API.
           </li>
           <li>
             Geração de resumo estatístico dos preços identificados, contemplando
@@ -90,6 +92,8 @@
             <th scope="col">Título</th>
             <th scope="col">Preço</th>
             <th scope="col">Fornecedor</th>
+            <th scope="col">Link</th>
+            <th scope="col" class="text-nowrap">Avaliação</th>
           </tr>
         </thead>
         <tbody>
@@ -99,6 +103,21 @@
               <td>{{ item.title }}</td>
               <td>{{ item.price }}</td>
               <td>{{ item.source }}</td>
+              <td>
+                {% if item.link %}
+                  <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer">Abrir oferta</a>
+                {% else %}
+                  <span class="text-muted">—</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if item.rating is not none %}
+                  {{ item.rating }}
+                  {% if item.reviews %}<span class="text-muted small">({{ item.reviews }})</span>{% endif %}
+                {% else %}
+                  <span class="text-muted">—</span>
+                {% endif %}
+              </td>
             </tr>
           {% endfor %}
         </tbody>
